@@ -12,8 +12,8 @@
 
     {% for server in server_list %}
         <div class="card server-card">
-            <h5 class="card-header">{{server['name']}}</h5>
-            <div class="card-body">
+            <a class="btn card-header text-left" data-toggle="collapse" href="#collapse-{{server['name']}}" role="button" aria-expanded="false">{{server['name']}}</a>
+            <div class="card-body collapse" id="collapse-{{server['name']}}">
               <h5 class="card-title">TODO</h5>
               <p class="card-text">More TODO</p>
               <a href="#" class="btn btn-primary" onclick="info_click();">More Info</a>
