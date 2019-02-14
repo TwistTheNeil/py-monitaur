@@ -43,10 +43,15 @@
 
             $.each(data, function(i) {
                 $("<div>").addClass("card server-card")
-                    .append($("<h5>").addClass("card-header")
+                    .append($("<a>").addClass("btn card-header text-left")
+                        .attr("data-toggle", "collapse")
+                        .attr("href", "#collapse-"+data[i].name)
+                        .attr("role", "button")
+                        .attr("aria-expanded", "false")
                         .text(data[i].name)
                     )
-                    .append($("<div>").addClass("card-body")
+                    .append($("<div>").addClass("card-body collapse")
+                        .attr("id", "collapse-"+data[i].name)
                         .append($("<h5>").addClass("card-title")
                             .text("TODO-TEXT")
                         )
