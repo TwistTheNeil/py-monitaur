@@ -6,6 +6,8 @@
 
 {% block content %}
 
+<button type="button" class="btn btn-primary" onclick="refresh_servers();">Refresh</button>
+
 <div class="container" id="servers-section">
 
     {% for server in server_list %}
@@ -22,8 +24,44 @@
 
 <script>
 
+    var data = [
+        {
+            "name": "cool-name1",
+        },
+        {
+            "name": "lol",
+        },
+    ];
+
     function info_click() {
         console.log("safdasfd!!");
+    }
+
+    function refresh_servers() {
+        if (data != null) {
+            $("#servers-section").empty();
+
+            $.each(data, function(i) {
+                $("<div>").addClass("card server-card")
+                    .append($("<h5>").addClass("card-header")
+                        .text(data[i].name)
+                    )
+                    .append($("<div>").addClass("card-body")
+                        .append($("<h5>").addClass("card-title")
+                            .text("TODO-TEXT")
+                        )
+                        .append($("<p>").addClass("card-text")
+                            .text("TODO-p-TEXT")
+                        )
+                        .append($("<a>").addClass("btn btn-primary")
+                            .text("More Info")
+                            .attr("onclick", 'info_click()')
+                            .attr("href", "#")
+                        )
+                    )
+                    .appendTo("#servers-section");
+            });
+        }
     }
 
 </script>
