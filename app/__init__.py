@@ -31,6 +31,9 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
+    from . import auth
+    app.register_blueprint(auth.bp)
+
     from . import servers
     app.register_blueprint(servers.bp)
     app.add_url_rule('/servers', endpoint='servers')
