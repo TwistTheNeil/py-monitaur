@@ -3,12 +3,13 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
-#from app.auth import login_required
+from app.auth import login_required
 from app.db import get_db
 
 bp = Blueprint('servers', __name__)
 
 @bp.route('/servers')
+@login_required
 def get_servers():
     db = get_db()
     server_list = db.execute(
