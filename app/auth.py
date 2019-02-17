@@ -49,10 +49,8 @@ def login():
             'SELECT * FROM users WHERE username = ?', (username,)
         ).fetchone()
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+        if user is None or not check_password_hash(user['password'], password):
+            error = 'Incorrect username or password.'
 
         if error is None:
             session.clear()
@@ -61,7 +59,7 @@ def login():
 
         flash(error)
 
-    return render_template('login.html')
+    return render_template('index.html')
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -79,13 +77,13 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('auth.register')) # TODO
+    return redirect(url_for('index.serve_index'))
 
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('index.serve_index'))
 
         return view(**kwargs)
 
