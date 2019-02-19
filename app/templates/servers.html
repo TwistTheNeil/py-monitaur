@@ -6,10 +6,47 @@
 
 {% block content %}
 
-<button type="button" class="btn btn-primary" onclick="refresh_servers();">Refresh</button>
+<div class="container-fluid">
 
-<div class="container" id="servers-section">
+    <section class="row">
+        <div class="col-md-8">
+            <h1>Server list</h1>
+        </div>
+        <div class="col-md-4">
+            <div class="btn-group float-right mt-2" role="group">
+                <button type="button" class="btn btn-secondary btn-md" data-toggle="modal" data-target="#registerNewServerModal">New Server</button>
+                <button type="button" class="btn btn-secondary btn-md" onclick="refresh_servers();">Refresh</button>
+            </div>
+        </div>
+    </section>
 
+    <!-- Register new server modal -->
+    <div class="modal fade" id="registerNewServerModal" tabindex="-1" role="dialog" aria-labelledby="registerNewServerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="registerNewServerModalLabel">Register new server</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                    <form id="register-new-server-form">
+                        <div class="form-group">
+                            <label for="registering-server-name">Name</label>
+                            <input class="form-control" id="registering-server-name" placeholder="Enter name">
+                        </div>
+                    </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button tyconsole.log(temp);pe="submit" class="btn btn-primary" onclick="register_new_server();">Save</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div id="servers-section">
     {% for server in server_list %}
         <div class="card server-card">
             <a class="btn card-header text-left" data-toggle="collapse" href="#collapse-{{server['name']}}" role="button" aria-expanded="false">{{server['name']}}</a>
@@ -21,6 +58,7 @@
         </div>
     {% endfor %}
     </div>
+</div>
 
 <script>
 
@@ -35,6 +73,24 @@
 
     function info_click() {
         console.log("safdasfd!!");
+    }
+
+    function register_new_server() {
+        var server_name = $("#registering-server-name").val();
+        console.log(server_name);
+
+        $.ajax({
+            url: "/servers/new",
+            data: $('#register-new-server-form').serialize(),
+            type: "POST",
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
     }
 
     function refresh_servers() {
