@@ -1,7 +1,9 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
+import datetime
+import uuid
 
 from app.auth import login_required
 from app.db import get_db
@@ -17,3 +19,14 @@ def get_servers():
     ).fetchall()
 
     return render_template('servers.html', server_list=server_list)
+
+def create_new_uuid(server_name):
+    return uuid.uuid3(uuid.NAMESPACE_DNS, server_name+datetime.datetime.today().strftime('%Y-%m-%d-%H-%M-%S'))
+
+@bp.route('/servers/new', methods=['POST'])
+def new_server():
+    new_server_name = request.json['registering-server-name']
+    new_server_id = create_new_uuid(new_server_name)
+    return jsonify(
+        id=new_server_id
+    )
