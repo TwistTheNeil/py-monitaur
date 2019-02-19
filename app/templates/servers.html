@@ -77,12 +77,20 @@
     }
 
     function register_new_server() {
-        //TODO Check that input is non null
+        // Make sure that the input is not empty
+        if($.trim($("#registering-server-name").val()) == '') {
+            $("#register-new-server-alert-danger").remove();
+            $("<div>").addClass("alert alert-danger")
+                    .attr("role", "alert")
+                    .attr("id", "register-new-server-alert-danger")
+                    .text("The name field can't be empty.")
+                    .appendTo("#register-new-server-modal");
+
+            return;
+        }
+
         var data = {};
-        
         data['registering-server-name'] = $("#registering-server-name").val();
-        console.log(data);
-        console.log(JSON.stringify(data));
 
         $.ajax({
             cache: false,
@@ -115,18 +123,18 @@
                     )
                     .appendTo("#servers-section");
 
-                
+                $('#registering-server-name').val("");
+                $("#register-new-server-alert-danger").remove();
+                $('#registerNewServerModal').modal('hide');
             },
             error: function(error) {
-                console.log("NOOO");
                 console.log(error)
 
                 $("#register-new-server-alert-danger").remove();
-
                 $("<div>").addClass("alert alert-danger")
                     .attr("role", "alert")
                     .attr("id", "register-new-server-alert-danger")
-                    .text("woops")
+                    .text("woops") // TODO
                     .appendTo("#register-new-server-modal");
             }
         });
