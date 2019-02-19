@@ -25,8 +25,15 @@ def create_new_uuid(server_name):
 
 @bp.route('/servers/new', methods=['POST'])
 def new_server():
-    new_server_name = request.json['registering-server-name']
+    new_server_name = request.form['registering-server-name']
+
+    # TODO: check if name exists
+
     new_server_id = create_new_uuid(new_server_name)
+
+    # TODO: add to database
+
     return jsonify(
+        name=new_server_name,
         id=new_server_id
     )

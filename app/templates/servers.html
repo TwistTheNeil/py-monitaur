@@ -8,6 +8,7 @@
 
 <div class="container-fluid">
 
+    <!-- Tool bar -->
     <section class="row">
         <div class="col-md-8">
             <h1>Server list</h1>
@@ -30,13 +31,13 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
-                    <form id="register-new-server-form">
-                        <div class="form-group">
-                            <label for="registering-server-name">Name</label>
-                            <input class="form-control" id="registering-server-name" placeholder="Enter name">
-                        </div>
-                    </form>
+            <div class="modal-body" id="register-new-server-modal">
+                <form id="register-new-server-form" method="POST">
+                    <div class="form-group">
+                        <label for="registering-server-name">Name</label>
+                        <input class="form-control" id="registering-server-name" placeholder="Enter name">
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -76,19 +77,55 @@
     }
 
     function register_new_server() {
-        var server_name = $("#registering-server-name").val();
-        console.log(server_name);
+        //TODO Check that input is non null
+        var data = {};
+        
+        data['registering-server-name'] = $("#registering-server-name").val();
+        console.log(data);
+        console.log(JSON.stringify(data));
 
         $.ajax({
-            url: "/servers/new",
-            data: $('#register-new-server-form').serialize(),
+            cache: false,
+            url: "{{ url_for('servers.new_server')}}",
+            data: data,
             type: "POST",
             dataType: "json",
             success: function(response) {
-                console.log(response);
+                $("<div>").addClass("card server-card")
+                    .append($("<a>").addClass("btn card-header text-left")
+                        .attr("data-toggle", "collapse")
+                        .attr("href", "#collapse-"+response.id)
+                        .attr("role", "button")
+                        .attr("aria-expanded", "false")
+                        .text(response.name)
+                    )
+                    .append($("<div>").addClass("card-body collapse")
+                        .attr("id", "collapse-"+response.id)
+                        .append($("<h5>").addClass("card-title")
+                            .text("TODO-TEXT")
+                        )
+                        .append($("<p>").addClass("card-text")
+                            .text("TODO-p-TEXT")
+                        )
+                        .append($("<a>").addClass("btn btn-primary")
+                            .text("More Info")
+                            .attr("onclick", 'info_click()')
+                            .attr("href", "#")
+                        )
+                    )
+                    .appendTo("#servers-section");
             },
             error: function(error) {
-                console.log(error);
+                console.log("NOOO");
+                console.log(error)
+
+                $("#register-new-server-alert-danger").remove();
+
+                $("<div>").addClass("alert alert-danger")
+                    .attr("role", "alert")
+                    .attr("id", "register-new-server-alert-danger")
+                    .text("woops")
+                    .appendTo("#register-new-server-modal");
             }
         });
     }
