@@ -27,8 +27,10 @@ def create_new_uuid(server_name):
 def new_server():
     new_server_name = request.form['registering-server-name']
 
+    db = get_db()
+
     # Check if name exists
-    result = get_db().execute(
+    result = db.execute(
         'select name from servers where name = ?',
         (new_server_name,)
     ).fetchone()
@@ -36,7 +38,11 @@ def new_server():
     if result is None:
         new_server_id = create_new_uuid(new_server_name)
 
-        # TODO: add to database
+        db.execute(
+            'insert into servers (name, id) values (?, ?)',
+            (new_server_name, str(new_server_id))
+        )
+        db.commit()
 
         return jsonify(
             name=new_server_name,
