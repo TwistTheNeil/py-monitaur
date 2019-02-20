@@ -10,13 +10,19 @@
 
     <!-- Tool bar -->
     <section class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <h1>Server list</h1>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="btn-group float-right mt-2" role="group">
-                <button type="button" class="btn btn-secondary btn-md" data-toggle="modal" data-target="#registerNewServerModal">New Server</button>
-                <button type="button" class="btn btn-secondary btn-md" onclick="refresh_servers();">Refresh</button>
+                <button type="button" class="btn btn-secondary btn-md" data-toggle="modal" data-target="#registerNewServerModal">
+                    <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
+                    Register
+                </button>
+                <button type="button" class="btn btn-secondary btn-md" onclick="refresh_servers();">
+                    <i class="fas fa-sync fa-sm"></i>
+                    Refresh
+                </button>
             </div>
         </div>
     </section>
