@@ -101,33 +101,42 @@
             type: "POST",
             dataType: "json",
             success: function(response) {
-                $("<div>").addClass("card server-card")
-                    .append($("<a>").addClass("btn card-header text-left")
-                        .attr("data-toggle", "collapse")
-                        .attr("href", "#collapse-"+response.id)
-                        .attr("role", "button")
-                        .attr("aria-expanded", "false")
-                        .text(response.name)
-                    )
-                    .append($("<div>").addClass("card-body collapse")
-                        .attr("id", "collapse-"+response.id)
-                        .append($("<h5>").addClass("card-title")
-                            .text("TODO-TEXT")
+                if(response.err != "") {
+                    $("#register-new-server-alert-danger").remove();
+                    $("<div>").addClass("alert alert-danger")
+                        .attr("role", "alert")
+                        .attr("id", "register-new-server-alert-danger")
+                        .text(response.err)
+                        .appendTo("#register-new-server-modal");
+                } else {
+                    $("<div>").addClass("card server-card")
+                        .append($("<a>").addClass("btn card-header text-left")
+                            .attr("data-toggle", "collapse")
+                            .attr("href", "#collapse-"+response.id)
+                            .attr("role", "button")
+                            .attr("aria-expanded", "false")
+                            .text(response.name)
                         )
-                        .append($("<p>").addClass("card-text")
-                            .text("TODO-p-TEXT")
+                        .append($("<div>").addClass("card-body collapse")
+                            .attr("id", "collapse-"+response.id)
+                            .append($("<h5>").addClass("card-title")
+                                .text("TODO-TEXT")
+                            )
+                            .append($("<p>").addClass("card-text")
+                                .text("TODO-p-TEXT")
+                            )
+                            .append($("<a>").addClass("btn btn-primary")
+                                .text("More Info")
+                                .attr("onclick", 'info_click()')
+                                .attr("href", "#")
+                            )
                         )
-                        .append($("<a>").addClass("btn btn-primary")
-                            .text("More Info")
-                            .attr("onclick", 'info_click()')
-                            .attr("href", "#")
-                        )
-                    )
-                    .appendTo("#servers-section");
+                        .appendTo("#servers-section");
 
-                $('#registering-server-name').val("");
-                $("#register-new-server-alert-danger").remove();
-                $('#registerNewServerModal').modal('hide');
+                    $('#registering-server-name').val("");
+                    $("#register-new-server-alert-danger").remove();
+                    $('#registerNewServerModal').modal('hide');
+                }
             },
             error: function(error) {
                 console.log(error)
@@ -141,6 +150,13 @@
             }
         });
     }
+
+    $(document).ready(function() {
+        $("#registerNewServerModal").on("hidden.bs.modal", function(){
+            $('#registering-server-name').val("");
+            $("#register-new-server-alert-danger").remove();
+        });
+    });
 
     function refresh_servers() {
         if (data != null) {
