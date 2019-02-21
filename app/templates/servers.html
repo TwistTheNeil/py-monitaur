@@ -55,14 +55,45 @@
         </div>
     </div>
 
+    <!-- Remove server modal -->
+    <div class="modal fade" id="removeServerModal" tabindex="-1" role="dialog" aria-labelledby="removeServerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="removeServerModalLabel">Remove server</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="remove-server-modal">
+                <form id="remove-server-form" method="POST">
+                    <div class="form-group">
+                        <label for="remove-server-name">Are you sure that you would like to remove this server? If you are, please type in the name of the server to verify.</label>
+                        <input class="form-control" id="remove-server-name" placeholder="Server name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-danger" onclick="remove_server();">Remove</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Server list -->
     <div id="servers-section">
     {% for server in server_list %}
         <div class="card server-card">
             <a class="btn card-header text-left" data-toggle="collapse" href="#collapse-{{server['name']}}" role="button" aria-expanded="false">{{server['name']}}</a>
             <div class="card-body collapse" id="collapse-{{server['name']}}">
-              <h5 class="card-title">TODO</h5>
-              <p class="card-text">More TODO</p>
-              <a href="#" class="btn btn-primary" onclick="info_click();">More Info</a>
+                <h5 class="card-title">TODO</h5>
+                <p class="card-text">More TODO</p>
+                <a href="#" class="btn btn-primary" onclick="info_click();">More Info</a>
+                <button type="button" id="removeServer-{{server['name']}}" class="btn btn-outline-danger btn-md float-right" data-toggle="modal" data-target="#removeServerModal" onclick="save_server_name(this.id);">
+                    <i class="fas fa-trash fa-sm" aria-hidden="true"></i>
+                    Remove
+                </button>
             </div>
         </div>
     {% endfor %}
@@ -80,8 +111,24 @@
         },
     ];
 
+    var current_server_chosen = "";
+
     function info_click() {
         console.log("safdasfd!!");
+    }
+
+    function save_server_name(server_id) {
+        current_server_chosen = server_id.split(/-(.+)/)[1];
+    }
+
+    function remove_server() {
+        if (current_server_chosen === $("#remove-server-name").val()) {
+            //TODO
+            return;
+        }
+        show_alert( "alert alert-danger", "remove-server-alert",
+                    "The server name entered doesn't match the one being deleted. Try again.",
+                    "#remove-server-form");
     }
 
     function show_alert(alertClass, alertID, alertText, alertParent) {
