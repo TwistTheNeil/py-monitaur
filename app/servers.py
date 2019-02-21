@@ -21,7 +21,26 @@ def get_servers():
     return render_template('servers.html', server_list=server_list)
 
 def create_new_uuid(server_name):
-    return uuid.uuid3(uuid.NAMESPACE_DNS, server_name+datetime.datetime.today().strftime('%Y-%m-%d-%H-%M-%S'))
+    return uuid.uuid3(
+        uuid.NAMESPACE_DNS,
+        server_name+datetime.datetime.today().strftime('%Y-%m-%d-%H-%M-%S')
+    )
+
+@bp.route('/servers/<name>/delete', methods=['POST'])
+def remove_server(name):
+    db = get_db()
+
+    # TODO: delete respective services too
+    db.execute(
+        'delete from servers where name = ?',
+        (name,)
+    )
+    db.commit()
+
+    # TODO: Error?
+    return jsonify(
+        err=""
+    )
 
 @bp.route('/servers/new', methods=['POST'])
 def new_server():

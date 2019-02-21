@@ -84,7 +84,7 @@
     <!-- Server list -->
     <div id="servers-section">
     {% for server in server_list %}
-        <div class="card server-card">
+        <div class="card server-card" id="card-{{server['name']}}"> <!-- updated -->
             <a class="btn card-header text-left" data-toggle="collapse" href="#collapse-{{server['name']}}" role="button" aria-expanded="false">{{server['name']}}</a>
             <div class="card-body collapse" id="collapse-{{server['name']}}">
                 <h5 class="card-title">TODO</h5>
@@ -93,7 +93,7 @@
                 <button type="button" id="removeServer-{{server['name']}}" class="btn btn-outline-danger btn-md float-right" data-toggle="modal" data-target="#removeServerModal" onclick="save_server_name(this.id);">
                     <i class="fas fa-trash fa-sm" aria-hidden="true"></i>
                     Remove
-                </button>
+                </button> <!-- updated -->
             </div>
         </div>
     {% endfor %}
@@ -124,6 +124,27 @@
     function remove_server() {
         if (current_server_chosen === $("#remove-server-name").val()) {
             //TODO
+            var post_url = "{{ url_for('servers.remove_server', name='current_server_chosen') }}";
+            post_url = post_url.replace(/current_server_chosen/, current_server_chosen);
+
+            $.ajax({
+                cache: false,
+                url: post_url,
+                data: data,
+                type: "POST",
+                dataType: "json",
+                success: function(response) {
+                    console.log("yay remove");
+                    $("#card-"+current_server_chosen).remove();
+                    $('#remove-server-name').val("");
+                    $("#remove-server-alert").remove();
+                    $('#removeServerModal').modal('hide');
+                },
+                error: function(response) {
+                    // TODO
+                    console.log(response);
+                }
+            });
             return;
         }
         show_alert( "alert alert-danger", "remove-server-alert",
@@ -211,9 +232,15 @@
     }
 
     $(document).ready(function() {
+        // TODO: Clean up
         $("#registerNewServerModal").on("hidden.bs.modal", function(){
             $('#registering-server-name').val("");
             $("#register-new-server-alert-danger").remove();
+        });
+
+        $("#removeServerModal").on("hidden.bs.modal", function(){
+            $('#remove-server-name').val("");
+            $("#remove-server-alert").remove();
         });
     });
 
