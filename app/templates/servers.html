@@ -10,8 +10,8 @@
 
     <!-- Tool bar -->
     <section class="row">
-        <div class="col-md-6">
-            <h1>Server list</h1>
+        <div class="col-md-6 toolbar-row">
+            <h2>Server list</h2>
         </div>
         <div class="col-md-6">
             <div class="btn-group float-right mt-2" role="group">
@@ -84,15 +84,23 @@
         console.log("safdasfd!!");
     }
 
+    function show_alert(alertClass, alertID, alertText, alertParent) {
+        $("#"+alertID).remove();
+            $("<div>").addClass(alertClass)
+                .attr("role", 'alert')
+                .attr("id", alertID)
+                .text(alertText)
+                .appendTo(alertParent);
+    }
+
     function register_new_server() {
         // Make sure that the input is not empty
         if($.trim($("#registering-server-name").val()) == '') {
-            $("#register-new-server-alert-danger").remove();
-            $("<div>").addClass("alert alert-danger")
-                    .attr("role", "alert")
-                    .attr("id", "register-new-server-alert-danger")
-                    .text("The name field can't be empty.")
-                    .appendTo("#register-new-server-modal");
+            show_alert( "alert alert-danger",
+                        "register-new-server-alert-danger",
+                        "The name field can't be empty.",
+                        "#register-new-server-modal"
+            );
 
             return;
         }
@@ -145,14 +153,12 @@
                 }
             },
             error: function(error) {
-                console.log(error)
-
-                $("#register-new-server-alert-danger").remove();
-                $("<div>").addClass("alert alert-danger")
-                    .attr("role", "alert")
-                    .attr("id", "register-new-server-alert-danger")
-                    .text("woops") // TODO
-                    .appendTo("#register-new-server-modal");
+                console.log(error);
+                show_alert( "alert alert-danger",
+                    "register-new-server-alert-danger",
+                    "Server returned error.", //TODO
+                    "#register-new-server-modal"
+                );
             }
         });
     }
