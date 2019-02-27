@@ -4,6 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 import datetime
 import uuid
+import json
 
 from app.auth import login_required
 from app.db import get_db
@@ -13,12 +14,7 @@ bp = Blueprint('servers', __name__)
 @bp.route('/servers')
 @login_required
 def get_servers():
-    db = get_db()
-    server_list = db.execute(
-        'SELECT * FROM servers'
-    ).fetchall()
-
-    return render_template('servers.html', server_list=server_list)
+    return render_template('servers.html')
 
 def create_new_uuid(server_name):
     return uuid.uuid3(
@@ -41,6 +37,15 @@ def remove_server(name):
     return jsonify(
         err=""
     )
+
+@bp.route('/servers/list', methods=['GET'])
+def list_servers():
+    db = get_db()
+    server_list = db.execute(
+        'SELECT * FROM servers'
+    ).fetchall()
+
+    return json.dumps([dict(x) for x in server_list])
 
 @bp.route('/servers/new', methods=['POST'])
 def new_server():

@@ -82,36 +82,26 @@
     </div>
 
     <!-- Server list -->
-    <div id="servers-section">
-    {% for server in server_list %}
-        <div class="card server-card" id="card-{{server['name']}}">
-            <a class="btn card-header text-left" data-toggle="collapse" href="#collapse-{{server['name']}}" role="button" aria-expanded="false">{{server['name']}}</a>
-            <div class="card-body collapse" id="collapse-{{server['name']}}">
-                <h5 class="card-title">TODO</h5>
-                <p class="card-text">More TODO</p>
-                <a href="#" class="btn btn-primary" onclick="info_click();">More Info</a>
-                <button type="button" id="removeServer-{{server['name']}}" class="btn btn-outline-danger btn-md float-right" data-toggle="modal" data-target="#removeServerModal" onclick="save_server_name(this.id);">
-                    <i class="fas fa-trash fa-sm" aria-hidden="true"></i>
-                    Remove
-                </button>
-            </div>
-        </div>
-    {% endfor %}
-    </div>
+    <div id="servers-section"></div>
 </div>
 
 <script>
-
-    var data = [
-        {
-            "name": "cool-name1",
-        },
-        {
-            "name": "lol",
-        },
-    ];
-
     var current_server_chosen = "";
+
+    $(document).ready(function() {
+        // TODO: Clean up
+        $("#registerNewServerModal").on("hidden.bs.modal", function(){
+            $('#registering-server-name').val("");
+            $("#register-new-server-alert-danger").remove();
+        });
+
+        $("#removeServerModal").on("hidden.bs.modal", function(){
+            $('#remove-server-name').val("");
+            $("#remove-server-alert").remove();
+        });
+
+        refresh_servers();
+    });
 
     function info_click() {
         console.log("safdasfd!!");
@@ -131,11 +121,9 @@
             $.ajax({
                 cache: false,
                 url: post_url,
-                data: data,
                 type: "POST",
                 dataType: "json",
                 success: function(response) {
-                    console.log("yay remove");
                     $("#card-"+current_server_chosen).remove();
                     $('#remove-server-name').val("");
                     $("#remove-server-alert").remove();
@@ -155,11 +143,51 @@
 
     function show_alert(alertClass, alertID, alertText, alertParent) {
         $("#"+alertID).remove();
-            $("<div>").addClass(alertClass)
-                .attr("role", 'alert')
-                .attr("id", alertID)
-                .text(alertText)
-                .appendTo(alertParent);
+        $("<div>").addClass(alertClass)
+            .attr("role", 'alert')
+            .attr("id", alertID)
+            .text(alertText)
+            .appendTo(alertParent);
+    }
+
+    function add_server_to_view(response) {
+        $("<div>").addClass("card server-card")
+            .attr("id", "card-"+response.name) // TODO: name -> id
+            .append($("<a>").addClass("btn card-header text-left")
+                .attr("data-toggle", "collapse")
+                .attr("href", "#collapse-"+response.name)
+                .attr("role", "button")
+                .attr("aria-expanded", "false")
+                .text(response.name)
+            )
+            .append($("<div>").addClass("card-body collapse")
+                .attr("id", "collapse-"+response.name)
+                .append($("<h5>").addClass("card-title")
+                    .text("TODO-TEXT")
+                )
+                .append($("<p>").addClass("card-text")
+                    .text("TODO-p-TEXT")
+                )
+                .append($("<a>").addClass("btn btn-primary")
+                    .text("More Info")
+                    .attr("onclick", 'info_click()')
+                    .attr("href", "#")
+                )
+                .append($("<button>")
+                    .attr("type", "button")
+                    .attr("id", "removeServer-"+response.name)
+                    .addClass("btn btn-outline-danger btn-md float-right")
+                    .attr("data-toggle", "modal")
+                    .attr("data-target", "#removeServerModal")
+                    .attr("onclick", 'save_server_name(this.id);')
+                    .append($("<i>")
+                        .addClass("fas fa-trash fa-sm")
+                        .attr("aria-hidden", "true")
+                    )
+                    .html('<i class="fas fa-trash fa-sm" aria-hidden="true"></i> Remove')
+                )
+            )
+            .appendTo("#servers-section");
     }
 
     function register_new_server() {
@@ -192,46 +220,7 @@
                         .text(response.err)
                         .appendTo("#register-new-server-modal");
                 } else {
-                    $("<div>").addClass("card server-card")
-                        .attr("id", "card-"+response.name)
-                        .append($("<a>").addClass("btn card-header text-left")
-                            .attr("data-toggle", "collapse")
-                            .attr("href", "#collapse-"+response.name)
-                            .attr("role", "button")
-                            .attr("aria-expanded", "false")
-                            .text(response.name)
-                        )
-                        .append($("<div>").addClass("card-body collapse")
-                            .attr("id", "collapse-"+response.name)
-                            .append($("<h5>").addClass("card-title")
-                                .text("TODO-TEXT")
-                            )
-                            .append($("<p>").addClass("card-text")
-                                .text("TODO-p-TEXT")
-                            )
-                            .append($("<a>").addClass("btn btn-primary")
-                                .text("More Info")
-                                .attr("onclick", 'info_click()')
-                                .attr("href", "#")
-                            )
-                            .append($("<button>")
-                                .attr("type", "button")
-                                .attr("id", "removeServer-"+response.name)
-                                .addClass("btn btn-outline-danger btn-md float-right")
-                                .attr("data-toggle", "modal")
-                                .attr("data-target", "#removeServerModal")
-                                .attr("onclick", 'save_server_name(this.id);')
-                                .append($("<i>")
-                                    .addClass("fas fa-trash fa-sm")
-                                    .attr("aria-hidden", "true")
-                                )
-                                .html('<i class="fas fa-trash fa-sm" aria-hidden="true"></i> Remove')
-                            )
-                        )
-                        .appendTo("#servers-section");
-
-                    $('#registering-server-name').val("");
-                    $("#register-new-server-alert-danger").remove();
+                    refresh_servers(response);
                     $('#registerNewServerModal').modal('hide');
                 }
             },
@@ -246,49 +235,31 @@
         });
     }
 
-    $(document).ready(function() {
-        // TODO: Clean up
-        $("#registerNewServerModal").on("hidden.bs.modal", function(){
-            $('#registering-server-name').val("");
-            $("#register-new-server-alert-danger").remove();
-        });
-
-        $("#removeServerModal").on("hidden.bs.modal", function(){
-            $('#remove-server-name').val("");
-            $("#remove-server-alert").remove();
-        });
-    });
-
     function refresh_servers() {
-        if (data != null) {
-            $("#servers-section").empty();
+        $("#servers-section").empty();
 
-            $.each(data, function(i) {
-                $("<div>").addClass("card server-card")
-                    .append($("<a>").addClass("btn card-header text-left")
-                        .attr("data-toggle", "collapse")
-                        .attr("href", "#collapse-"+data[i].name)
-                        .attr("role", "button")
-                        .attr("aria-expanded", "false")
-                        .text(data[i].name)
-                    )
-                    .append($("<div>").addClass("card-body collapse")
-                        .attr("id", "collapse-"+data[i].name)
-                        .append($("<h5>").addClass("card-title")
-                            .text("TODO-TEXT")
-                        )
-                        .append($("<p>").addClass("card-text")
-                            .text("TODO-p-TEXT")
-                        )
-                        .append($("<a>").addClass("btn btn-primary")
-                            .text("More Info")
-                            .attr("onclick", 'info_click()')
-                            .attr("href", "#")
-                        )
-                    )
-                    .appendTo("#servers-section");
-            });
-        }
+        $.ajax({
+            cache: false,
+            url: "{{ url_for('servers.list_servers')}}",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                $.each(response, function(i) {
+                    add_server_to_view(response[i]);
+                });
+            },
+            error: function(error) {
+                console.log(error);
+
+                // TODO: show error
+
+                /*show_alert( "alert alert-danger",
+                    "register-new-server-alert-danger",
+                    "Server returned error.", //TODO
+                    "#register-new-server-modal"
+                );*/
+            }
+        });
     }
 
 </script>
