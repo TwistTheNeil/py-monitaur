@@ -15,7 +15,7 @@ create table logged_times (
     id integer primary key autoincrement,
     server_name text,
     service_name text,
-    logged_at datetime default current_timestamp not null
+    logged_at timestamp default (strftime('%s', 'now')) not null
 );
 
 create table users (
