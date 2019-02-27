@@ -84,7 +84,7 @@
     <!-- Server list -->
     <div id="servers-section">
     {% for server in server_list %}
-        <div class="card server-card" id="card-{{server['name']}}"> <!-- updated -->
+        <div class="card server-card" id="card-{{server['name']}}">
             <a class="btn card-header text-left" data-toggle="collapse" href="#collapse-{{server['name']}}" role="button" aria-expanded="false">{{server['name']}}</a>
             <div class="card-body collapse" id="collapse-{{server['name']}}">
                 <h5 class="card-title">TODO</h5>
@@ -93,7 +93,7 @@
                 <button type="button" id="removeServer-{{server['name']}}" class="btn btn-outline-danger btn-md float-right" data-toggle="modal" data-target="#removeServerModal" onclick="save_server_name(this.id);">
                     <i class="fas fa-trash fa-sm" aria-hidden="true"></i>
                     Remove
-                </button> <!-- updated -->
+                </button>
             </div>
         </div>
     {% endfor %}
@@ -118,6 +118,7 @@
     }
 
     function save_server_name(server_id) {
+        console.log(server_id);
         current_server_chosen = server_id.split(/-(.+)/)[1];
     }
 
@@ -192,15 +193,16 @@
                         .appendTo("#register-new-server-modal");
                 } else {
                     $("<div>").addClass("card server-card")
+                        .attr("id", "card-"+response.name)
                         .append($("<a>").addClass("btn card-header text-left")
                             .attr("data-toggle", "collapse")
-                            .attr("href", "#collapse-"+response.id)
+                            .attr("href", "#collapse-"+response.name)
                             .attr("role", "button")
                             .attr("aria-expanded", "false")
                             .text(response.name)
                         )
                         .append($("<div>").addClass("card-body collapse")
-                            .attr("id", "collapse-"+response.id)
+                            .attr("id", "collapse-"+response.name)
                             .append($("<h5>").addClass("card-title")
                                 .text("TODO-TEXT")
                             )
@@ -211,6 +213,19 @@
                                 .text("More Info")
                                 .attr("onclick", 'info_click()')
                                 .attr("href", "#")
+                            )
+                            .append($("<button>")
+                                .attr("type", "button")
+                                .attr("id", "removeServer-"+response.name)
+                                .addClass("btn btn-outline-danger btn-md float-right")
+                                .attr("data-toggle", "modal")
+                                .attr("data-target", "#removeServerModal")
+                                .attr("onclick", 'save_server_name(this.id);')
+                                .append($("<i>")
+                                    .addClass("fas fa-trash fa-sm")
+                                    .attr("aria-hidden", "true")
+                                )
+                                .html('<i class="fas fa-trash fa-sm" aria-hidden="true"></i> Remove')
                             )
                         )
                         .appendTo("#servers-section");
