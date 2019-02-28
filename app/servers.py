@@ -47,6 +47,19 @@ def list_servers():
 
     return json.dumps([dict(x) for x in server_list])
 
+@bp.route('/servers/<id>/ping', methods=['POST'])
+def ping_server(id):
+    db = get_db()
+    db.execute(
+        'insert into logged_times (server_id) values (?)',
+        (id,)
+    )
+    db.commit()
+
+    return jsonify(
+        err=""
+    )
+
 @bp.route('/servers/new', methods=['POST'])
 def new_server():
     new_server_name = request.form['registering-server-name']
