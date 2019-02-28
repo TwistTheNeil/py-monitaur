@@ -166,7 +166,7 @@
                     .text("ID: " + response.id)
                 )
                 .append($("<p>").addClass("card-text")
-                    .text("TODO-p-TEXT")
+                    .text("Last seen: " + (response.last_logged == 0 ? "Never" : (((Date.now()/1000)-response.last_logged))/(60) + " minutes"))
                 )
                 .append($("<a>").addClass("btn btn-primary")
                     .text("More Info")

@@ -42,7 +42,7 @@ def remove_server(name):
 def list_servers():
     db = get_db()
     server_list = db.execute(
-        'SELECT * FROM servers'
+        'select S.name as name, S.id as id, MAX(L.logged_at) as last_logged from servers S, logged_times L where S.id = L.server_id group by S.id'
     ).fetchall()
 
     return json.dumps([dict(x) for x in server_list])
@@ -78,6 +78,12 @@ def new_server():
         db.execute(
             'insert into servers (name, id) values (?, ?)',
             (new_server_name, str(new_server_id))
+        )
+        db.commit()
+
+        db.execute(
+            'insert into logged_times (server_id, logged_at) values (?, ?)',
+            (str(new_server_id),0,)
         )
         db.commit()
 
