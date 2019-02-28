@@ -13,9 +13,11 @@ create table services (
 
 create table logged_times (
     id integer primary key autoincrement,
-    server_name text,
-    service_name text,
-    logged_at timestamp default (strftime('%s', 'now')) not null
+    server_id text,
+    service_id text,
+    logged_at timestamp default (strftime('%s', 'now')) not null,
+    foreign key (server_id) references servers(id),
+    foreign key (service_id) references services(id)
 );
 
 create table users (
