@@ -19,7 +19,7 @@
                     <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
                     Register
                 </button>
-                <button type="button" class="btn btn-secondary btn-md" onclick="refresh_servers();">
+                <button type="button" class="btn btn-secondary btn-md" onclick="refresh_services();">
                     <i class="fas fa-sync fa-sm"></i>
                     Refresh
                 </button>
@@ -114,10 +114,12 @@
     });
 
     function add_service_to_table(data) {
+        var last_seen_minutes = data.last_seen == 0 ? "Never" : Math.floor(((Date.now()/1000) - data.last_seen)/60) + " minutes ago"
+
         $("<tr>")
             .append($("<td>").text(data.name))
             .append($("<td>").text(data.id))
-            .append($("<td>").text(data.last_seen))
+            .append($("<td>").text(last_seen_minutes))
             .appendTo($("#services-section-body"))
     }
 
