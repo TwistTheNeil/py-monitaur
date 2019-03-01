@@ -18,3 +18,11 @@ body {
 .container > .btn {
     margin-top: 20px;
 }
+
+.border-danger .card-header {
+    color: red;
+}
+
+.border-success .card-header {
+    color: green;
+}

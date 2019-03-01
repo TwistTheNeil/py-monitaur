@@ -151,18 +151,22 @@
     }
 
     function add_server_to_view(response) {
-        $("<div>").addClass("card server-card")
+        var last_seen = (((Date.now()/1000)-response.last_logged))/(60);
+        var border_color = last_seen > 5 ? "border-danger" : "border-success"
+        var status_icon = last_seen > 5 ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>'
+
+        $("<div>").addClass("card server-card " + border_color)
             .attr("id", "card-"+response.name) // TODO: name -> id
-            .append($("<a>").addClass("btn card-header text-left")
+            .append($("<div>").addClass("card-header text-left")
                 .attr("role", "button")
-                .text(response.name)
+                .html(status_icon + " " + response.name)
             )
             .append($("<div>").addClass("card-body")
                 .append($("<p>").addClass("card-title")
                     .text("ID: " + response.id)
                 )
                 .append($("<p>").addClass("card-text")
-                    .text("Last seen: " + (response.last_logged == 0 ? "Never" : (((Date.now()/1000)-response.last_logged))/(60) + " minutes"))
+                    .text("Last seen: " + (response.last_logged == 0 ? "Never" :  last_seen + " minutes"))
                 )
                 .append($("<a>").addClass("btn btn-primary")
                     .text("More Info")
