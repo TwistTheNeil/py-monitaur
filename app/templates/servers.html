@@ -170,8 +170,7 @@
                 )
                 .append($("<a>").addClass("btn btn-primary")
                     .text("More Info")
-                    .attr("onclick", 'info_click()')
-                    .attr("href", "#")
+                    .attr("href", 'services/on/'+response.id) // TOOD: Figure out how to use url_for across blurprints
                 )
                 .append($("<button>")
                     .attr("type", "button")
