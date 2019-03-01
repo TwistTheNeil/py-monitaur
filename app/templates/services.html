@@ -114,7 +114,6 @@
     });
 
     function add_service_to_table(data) {
-        console.log(data)
         $("<tr>")
             .append($("<td>").text(data.name))
             .append($("<td>").text(data.id))
@@ -122,13 +121,56 @@
             .appendTo($("#services-section-body"))
     }
 
+    function register_new_service() {
+        // Make sure that the input is not empty
+        // TODO: refactor AND fix naming (server -> service) after refactoring
+        if($.trim($("#registering-server-name").val()) == '') {
+            show_alert( "alert alert-danger",
+                        "register-new-server-alert-danger",
+                        "The name field can't be empty.",
+                        "#register-new-server-modal"
+            );
+
+            return;
+        }
+
+        var data = {};
+        data['registering-service-name'] = $("#registering-server-name").val(); // TODO: fix name
+
+        var post_url = "{{url_for('services.new_service', id='server_id')}}"
+        post_url = post_url.replace(/server_id/, '{{server_id}}');
+
+        $.post(post_url, data)
+            .done(function(response) {
+                if(response.err != "") {
+                    $("#register-new-server-alert-danger").remove();
+                    $("<div>").addClass("alert alert-danger")
+                        .attr("role", "alert")
+                        .attr("id", "register-new-server-alert-danger")
+                        .text(response.err)
+                        .appendTo("#register-new-server-modal");
+                } else {
+                    refresh_services(response);
+                    $('#registerNewServerModal').modal('hide');
+                }
+            })
+            .fail(function(error) {
+                console.log(error);
+                show_alert( "alert alert-danger",
+                    "register-new-server-alert-danger",
+                    "Server returned error.", //TODO
+                    "#register-new-server-modal"
+                );
+            })
+    }
+
     function refresh_services() {
         $("#services-section-body").empty();
 
-        var post_url = "{{url_for('services.get_services', id='server_id')}}"
-        post_url = post_url.replace(/server_id/, '{{server_id}}');
+        var get_url = "{{url_for('services.get_services', id='server_id')}}"
+        get_url = get_url.replace(/server_id/, '{{server_id}}');
 
-        $.get(post_url)
+        $.get(get_url)
             .done(function(response) {
                 json_data = JSON.parse(response)
                 $.each(json_data, function(i) {

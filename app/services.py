@@ -31,6 +31,47 @@ def get_services(id):
 
     return json.dumps([dict(x) for x in data])
 
+@bp.route('/services/on/<id>/new', methods=['POST'])
+@login_required
+def new_service(id):
+    new_service_name = request.form['registering-service-name']
+
+    db = get_db()
+
+    # Check if name exists
+    result = db.execute(
+        'select name from services where name = ?',
+        (new_service_name,)
+    ).fetchone()
+
+    if result is None:
+        new_service_id = create_new_uuid(new_service_name)
+        #DEBUG:
+        print(new_service_name)
+        print(new_service_id)
+        db.execute(
+            'insert into services (name, id, server_id) values (?, ?, ?)',
+            (new_service_name, str(new_service_id), id)
+        )
+        db.commit()
+
+        db.execute(
+            'insert into logged_times (service_id, logged_at) values (?, ?)',
+            (str(new_service_id),0,)
+        )
+        db.commit()
+
+        return jsonify(
+            name=new_service_name,
+            id=new_service_id,
+            last_seen="0",
+            err=""
+        )
+    else:
+        return jsonify(
+            err="Server name already exists."
+        )
+
 @bp.route('/services/<id>/ping', methods=['POST'])
 def ping_service(id):
     db = get_db()
