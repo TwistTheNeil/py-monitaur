@@ -8,7 +8,9 @@ create table servers (
 
 create table services (
     name text not null,
-    id text primary key
+    server_id text not null,
+    id text primary key,
+    foreign key (server_id) references servers(id)
 );
 
 create table logged_times (
