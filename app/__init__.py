@@ -36,4 +36,8 @@ def create_app(test_config=None):
     app.register_blueprint(servers.bp)
     app.add_url_rule('/servers', endpoint='servers')
 
+    from . import services
+    app.register_blueprint(services.bp)
+    app.add_url_rule('/services', endpoint='services')
+
     return app

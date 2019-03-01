@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  {% block title %}{{server_name}} - Services{% endblock %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Tool bar -->
+    <section class="row">
+        <div class="col-md-6 toolbar-row">
+            <h2>{{server_name}}'s registered services</h2>
+        </div>
+        <div class="col-md-6">
+            <div class="btn-group float-right mt-2" role="group">
+                <button type="button" class="btn btn-secondary btn-md" data-toggle="modal" data-target="#registerNewServerModal">
+                    <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
+                    Register
+                </button>
+                <button type="button" class="btn btn-secondary btn-md" onclick="refresh_servers();">
+                    <i class="fas fa-sync fa-sm"></i>
+                    Refresh
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Register new service modal -->
+    <!-- TODO: Refactor this -->
+    <div class="modal fade" id="registerNewServerModal" tabindex="-1" role="dialog" aria-labelledby="registerNewServerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="registerNewServerModalLabel">Register new service</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="register-new-server-modal">
+                <form id="register-new-server-form" method="POST">
+                    <div class="form-group">
+                        <label for="registering-server-name">Name</label>
+                        <input class="form-control" id="registering-server-name" placeholder="Enter name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" onclick="register_new_service();">Save</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Remove service modal -->
+    <!-- TODO: Refactor this -->
+    <div class="modal fade" id="removeServerModal" tabindex="-1" role="dialog" aria-labelledby="removeServerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="removeServerModalLabel">Remove server</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="remove-server-modal">
+                <form id="remove-server-form" method="POST">
+                    <div class="form-group">
+                        <label for="remove-server-name">Are you sure that you would like to remove this server? If you are, please type in the name of the server to verify.</label>
+                        <input class="form-control" id="remove-server-name" placeholder="Server name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-danger" onclick="remove_server();">Remove</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Service list -->
+    <div class="table-responsive" id="services-section">
+        <table class="table table-striped table-hover">
+            <thead class="">
+                <th scope="col">Name</th>
+                <th scope="col">ID</th>
+                <th scope="col">Last seen</th>
+                <th scope="col"></th>
+            </thead>
+            <tbody id="services-section-body">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // TODO: Clean up
+        $("#registerNewServerModal").on("hidden.bs.modal", function(){
+            $('#registering-server-name').val("");
+            $("#register-new-server-alert-danger").remove();
+        });
+
+        $("#removeServerModal").on("hidden.bs.modal", function(){
+            $('#remove-server-name').val("");
+            $("#remove-server-alert").remove();
+        });
+
+        refresh_services();
+    });
+
+    function add_service_to_table(data) {
+        console.log(data)
+        $("<tr>")
+            .append($("<td>").text(data.name))
+            .append($("<td>").text(data.id))
+            .append($("<td>").text(data.last_seen))
+            .appendTo($("#services-section-body"))
+    }
+
+    function refresh_services() {
+        $("#services-section-body").empty();
+
+        var post_url = "{{url_for('services.get_services', id='server_id')}}"
+        post_url = post_url.replace(/server_id/, '{{server_id}}');
+
+        $.get(post_url)
+            .done(function(response) {
+                json_data = JSON.parse(response)
+                $.each(json_data, function(i) {
+                    console.log(json_data[i])
+                    add_service_to_table(json_data[i])
+                });
+            })
+            .fail(function(response) {
+                // TODO: Something useful here
+                console.log("get error")
+                console.log(response)
+            });
+    }
+
+</script>
+
+{% endblock %}
