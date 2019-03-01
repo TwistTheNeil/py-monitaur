@@ -8,6 +8,7 @@ import json
 
 from app.auth import login_required
 from app.db import get_db
+from app.helpers import create_new_uuid
 
 bp = Blueprint('servers', __name__)
 
@@ -15,12 +16,6 @@ bp = Blueprint('servers', __name__)
 @login_required
 def get_servers():
     return render_template('servers.html')
-
-def create_new_uuid(server_name):
-    return uuid.uuid3(
-        uuid.NAMESPACE_DNS,
-        server_name+datetime.datetime.today().strftime('%Y-%m-%d-%H-%M-%S')
-    )
 
 @bp.route('/servers/<name>/delete', methods=['POST'])
 def remove_server(name):
