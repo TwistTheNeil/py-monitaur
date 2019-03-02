@@ -45,10 +45,13 @@ def list_servers():
 
 @bp.route('/servers/<id>/ping', methods=['POST'])
 def ping_server(id):
+    # TODO: Is there a better way to do this?
+    load = request.form['load']
+
     db = get_db()
     db.execute(
-        'insert into logged_times (server_id) values (?)',
-        (id,)
+        'insert into logged_times (server_id, load) values (?, ?)',
+        (id, load,)
     )
     db.commit()
 

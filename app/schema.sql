@@ -18,6 +18,7 @@ create table logged_times (
     server_id text,
     service_id text,
     logged_at timestamp default (strftime('%s', 'now')) not null,
+    load float,
     foreign key (server_id) references servers(id),
     foreign key (service_id) references services(id)
 );
