@@ -9,8 +9,8 @@
 <div class="container-fluid">
 
     <!-- Tool bar -->
-    <section class="row">
-        <div class="col-md-6 toolbar-row">
+    <div class="row">
+        <div class="col-md-6">
             <h2>{{server_name}}'s registered services</h2>
         </div>
         <div class="col-md-6">
@@ -25,7 +25,7 @@
                 </button>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Register new service modal -->
     <!-- TODO: Refactor this -->
@@ -83,8 +83,9 @@
 
     <!-- Service list -->
     <div class="table-responsive" id="services-section">
-        <table class="table table-striped table-hover">
+        <table class="table table-sm table-striped table-hover">
             <thead class="">
+                <th scope="col"></th>
                 <th scope="col">Name</th>
                 <th scope="col">ID</th>
                 <th scope="col">Last seen</th>
@@ -98,6 +99,9 @@
 </div>
 
 <script>
+
+    var TIMEOUT = 5;
+
     $(document).ready(function() {
         // TODO: Clean up
         $("#registerNewServerModal").on("hidden.bs.modal", function(){
@@ -114,12 +118,25 @@
     });
 
     function add_service_to_table(data) {
-        var last_seen_minutes = data.last_seen == 0 ? "Never" : Math.floor(((Date.now()/1000) - data.last_seen)/60) + " minutes ago"
+        var modifier = {}
+        modifier['last'] = data.last_seen == 0 ? "Never" : Math.floor(((Date.now()/1000) - data.last_seen)/60) + " minutes ago"
+        modifier['last_n'] = ((Date.now()/1000) - data.last_seen)/60
+        modifier['status_icon'] =  modifier['last_n'] > TIMEOUT ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>'
 
         $("<tr>")
+            .attr("style", (modifier['last_n'] > TIMEOUT ? "color:red;" : "color:green;"))
+            .append($("<td>").html(modifier['status_icon']))
             .append($("<td>").text(data.name))
             .append($("<td>").text(data.id))
-            .append($("<td>").text(last_seen_minutes))
+            .append($("<td>").text(modifier['last']))
+            .append($("<td>")
+                .append(
+                    $("<div>")
+                    .append($("<button>").addClass("table-button btn btn-primary")
+                        .html('<i class="fas fa-cog"></i> Edit')
+                    )
+                )
+            )
             .appendTo($("#services-section-body"))
     }
 
