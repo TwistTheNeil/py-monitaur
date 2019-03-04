@@ -198,7 +198,6 @@
 
         $.get("/servers/"+response.id+"/metrics")
         .done(function(metrics_response) {
-            console.log(JSON.parse(metrics_response)) // TODO
             var json_data = JSON.parse(metrics_response)
             $.each(json_data, function(i) {
                 metrics_load.push(json_data[i].load)
