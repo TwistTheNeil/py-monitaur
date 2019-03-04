@@ -1,8 +1,12 @@
 #!/bin/bash
+#
+# Usage (cron)
+#  */4 * * * * /path/to/monitaur/examples/ping_server
 
 hostname="localhost:5000"
 uuid="e4abf886-b47a-383c-a604-5bc47c811a4e"
 curl="/usr/bin/curl"
+load_avg="$(cat /proc/loadavg | cut -d' ' -f 1)"
 
-${curl} -X POST "${hostname}/servers/${uuid}/ping" -d "load=$(cat /proc/loadavg | cut -d' ' -f 1)" &> /dev/null
+${curl} -X POST "${hostname}/servers/${uuid}/ping" -d "load=${load_avg}" &> /dev/null
 
