@@ -202,7 +202,7 @@
             var json_data = JSON.parse(metrics_response)
             $.each(json_data, function(i) {
                 metrics_load.push(json_data[i].load)
-                metrics_log.push(Date(json_data[i].logged_at*1000))
+                metrics_log.push(new Date(json_data[i].logged_at*1000))
             })
         })
 
