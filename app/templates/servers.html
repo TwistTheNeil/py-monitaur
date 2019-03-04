@@ -187,9 +187,6 @@
                     )
                     .html('<i class="fas fa-trash fa-sm" aria-hidden="true"></i> Remove')
                 )
-                .append($("<canvas>")
-                    .attr("id", "myChart")
-                )
             )
             .appendTo("#servers-section");
 
@@ -203,33 +200,40 @@
                 metrics_load.push(json_data[i].load)
                 metrics_log.push(new Date(json_data[i].logged_at*1000))
             })
-        })
 
-        var ctx = document.getElementById('myChart').getContext('2d');
+            if (metrics_load.length > 0) {
+                $("#card-"+response.name).append($("<canvas>")
+                    .attr("id", "chart-"+response.id)
+                )
+                
+                var ctx = document.getElementById("chart-"+response.id).getContext('2d');
 
-        var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: metrics_log,
-                datasets: [{
-                    label: "Load average",
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: metrics_load,
-                }]
-            },
-            options: {
-                scales: {
-                    xAxes: [{
-                        display: false,
-                        scaleLabel: { // TODO: fix
-                            display: true,
-                            labelString: "lol",
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: metrics_log,
+                        datasets: [{
+                            label: "Load average",
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: metrics_load,
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                display: false,
+                                scaleLabel: { // TODO: fix
+                                    display: true,
+                                    labelString: "lol",
+                                }
+                            }]
                         }
-                    }]
-                }
+                    }
+                });
             }
-        });
+        })
+        
     }
 
     function register_new_server() {
