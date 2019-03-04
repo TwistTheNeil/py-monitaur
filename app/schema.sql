@@ -17,7 +17,7 @@ create table logged_times (
     id integer primary key autoincrement,
     server_id text,
     service_id text,
-    logged_at timestamp default (strftime('%s', 'now')) not null,
+    logged_at integer default (cast(strftime('%s', 'now') as integer)) not null,
     load float,
     foreign key (server_id) references servers(id),
     foreign key (service_id) references services(id)
