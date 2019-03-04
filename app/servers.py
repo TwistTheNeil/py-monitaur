@@ -46,7 +46,10 @@ def list_servers():
 @bp.route('/servers/<id>/ping', methods=['POST'])
 def ping_server(id):
     # TODO: Is there a better way to do this?
-    load = request.form['load']
+    try:
+        load = request.form['load']
+    except KeyError:
+        load = None
 
     db = get_db()
     db.execute(
@@ -58,6 +61,15 @@ def ping_server(id):
     return jsonify(
         err=""
     )
+
+@bp.route('/servers/<id>/metrics', methods=['GET'])
+def get_server_metrics(id):
+    returned = get_db().execute(
+        'select logged_at, load from logged_times where server_id = ? and load is not null',
+        (id,)
+    ).fetchall()
+
+    return json.dumps([dict(x) for x in returned])
 
 @bp.route('/servers/new', methods=['POST'])
 def new_server():
