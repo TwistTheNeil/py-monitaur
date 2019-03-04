@@ -205,7 +205,7 @@
                 $("#card-"+response.name).append($("<canvas>")
                     .attr("id", "chart-"+response.id)
                 )
-                
+
                 var ctx = document.getElementById("chart-"+response.id).getContext('2d');
 
                 var chart = new Chart(ctx, {
@@ -232,6 +232,10 @@
                     }
                 });
             }
+        })
+        .fail(function(metrics_response) {
+            // TODO
+            console.log(metrics_response)
         })
         
     }
