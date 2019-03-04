@@ -86,6 +86,8 @@
 </div>
 
 <script>
+
+
     var current_server_chosen = "";
 
     $(document).ready(function() {
@@ -185,8 +187,50 @@
                     )
                     .html('<i class="fas fa-trash fa-sm" aria-hidden="true"></i> Remove')
                 )
+                .append($("<canvas>")
+                    .attr("id", "myChart")
+                )
             )
             .appendTo("#servers-section");
+
+        var metrics_load = [];
+        var metrics_log = [];
+
+        $.get("/servers/"+response.id+"/metrics")
+        .done(function(metrics_response) {
+            console.log(JSON.parse(metrics_response)) // TODO
+            var json_data = JSON.parse(metrics_response)
+            $.each(json_data, function(i) {
+                metrics_load.push(json_data[i].load)
+                metrics_log.push(Date(json_data[i].logged_at*1000))
+            })
+        })
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: metrics_log,
+                datasets: [{
+                    label: "Load average",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: metrics_load,
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: { // TODO: fix
+                            display: true,
+                            labelString: "lol",
+                        }
+                    }]
+                }
+            }
+        });
     }
 
     function register_new_server() {
