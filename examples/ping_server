@@ -1,0 +1,8 @@
+#!/bin/bash
+
+hostname="localhost:5000"
+uuid="e4abf886-b47a-383c-a604-5bc47c811a4e"
+curl="/usr/bin/curl"
+
+${curl} -X POST "${hostname}/servers/${uuid}/ping" -d "load=$(cat /proc/loadavg | cut -d' ' -f 1)" &> /dev/null
+
