@@ -114,8 +114,18 @@
             $("#remove-server-alert").remove();
         });
 
+        $('[data-toggle="tooltip"]').tooltip()
+
         refresh_services();
     });
+
+    function service_copy_url(id) {
+        // TODO: pass this url from the backend
+        var url_selected = "https://monitaur.neilcastelino.com/services/" + id.split("-").slice(2,7).join("-") + "/ping"
+        var temp = $('<input>').val(url_selected).appendTo('body').select()
+        document.execCommand("copy");
+        temp.remove();
+    }
 
     function add_service_to_table(data) {
         var modifier = {}
@@ -127,7 +137,19 @@
             .attr("style", (modifier['last_n'] > TIMEOUT ? "color:red;" : "color:green;"))
             .append($("<td>").html(modifier['status_icon']))
             .append($("<td>").text(data.name))
-            .append($("<td>").text(data.id))
+            .append($("<td>")
+                .append($("<button>")
+                    .addClass("btn btn-outline-primary btn-sm")
+                    .attr("id", "service-copy-"+data.id)
+                    .attr("type", "button")
+                    .attr("data-toggle", "tooltip")
+                    .attr("data-placement", "top")
+                    .attr("title", "Copy URL to clipboard")
+                    .html('<i class="fas fa-copy"></i>  ')
+                    .attr("onclick", 'service_copy_url(this.id);')
+                )
+                .append("   " + data.id)
+            )
             .append($("<td>").text(modifier['last']))
             .append($("<td>")
                 .append(

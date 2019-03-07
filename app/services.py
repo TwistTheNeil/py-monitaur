@@ -46,9 +46,7 @@ def new_service(id):
 
     if result is None:
         new_service_id = create_new_uuid(new_service_name)
-        #DEBUG:
-        print(new_service_name)
-        print(new_service_id)
+
         db.execute(
             'insert into services (name, id, server_id) values (?, ?, ?)',
             (new_service_name, str(new_service_id), id)
@@ -72,6 +70,8 @@ def new_service(id):
             err="Server name already exists."
         )
 
+# TODO: if a server has not been pinged, but a service has been,
+# should the server be host server be marked as "up"?
 @bp.route('/services/<id>/ping', methods=['POST'])
 def ping_service(id):
     db = get_db()
