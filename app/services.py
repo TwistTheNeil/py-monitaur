@@ -87,7 +87,6 @@ def ping_service(id):
 
 @bp.route('/services/<id>/remove', methods=['DELETE'])
 def remove_service(id):
-    print("removing " + id)
     db = get_db()
     db.execute(
         'delete from services where id = ?',
@@ -95,7 +94,20 @@ def remove_service(id):
     )
     db.commit()
 
-    print("removed " + id)
+    return jsonify(
+        err=""
+    )
+
+@bp.route('/services/<id>/rename', methods=['PUT'])
+def rename_service(id):
+    updated_name = request.form['updated_name']
+    db = get_db()
+    db.execute(
+       'update services set name = ? where id = ?',
+       (updated_name, id,)
+    )
+    db.commit()
+
     return jsonify(
         err=""
     )

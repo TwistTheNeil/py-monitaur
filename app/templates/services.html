@@ -101,8 +101,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-check"></i> Save</button>
-                <button type="submit" class="btn btn-danger" onclick="remove_service();"><i class="fas fa-trash"></i> Remove</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="rename_service();"><i class="fas fa-check"></i> Save</button>
+                <button type="submit" class="btn btn-danger" data-dismiss="modal" onclick="remove_service();"><i class="fas fa-trash"></i> Remove</button>
             </div>
             </div>
         </div>
@@ -143,7 +143,7 @@
         });
 
         $("#editServiceModal").on("hidden.bs.modal", function(){
-            $('#edit-server-name').val("");
+            $('#edit-service-name').val("");
             $("#edit-service-alert-danger").remove();
         });
 
@@ -296,6 +296,37 @@
         })
     }
 
+    function rename_service() {
+        var updated_name = $("#edit-service-name").val().trim()
+
+        if(updated_name === "") {
+            show_alert( "alert alert-danger",
+                        "edit-service-alert-danger",
+                        "Cannot set an empty string or whitespace as a name. Try again.",
+                        "#edit-service-modal"
+            );
+            return;
+        }
+
+        var put_url = "/services/" + current_id.split("-").slice(2,7).join("-") + "/rename"
+
+        $.ajax({
+            url: put_url,
+            type: 'PUT',
+            data: {"updated_name": updated_name},
+            success: function() {
+                refresh_services();
+                $('#editServiceModal').modal('hide');
+            },
+            error: function(response) {
+                show_alert( "alert alert-danger",
+                        "edit-service-alert-danger",
+                        "Unable to update service. Please refresh page and try again.",
+                        "#edit-service-modal"
+                );
+            }
+        })
+    }
 </script>
 
 {% endblock %}
