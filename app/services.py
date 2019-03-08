@@ -84,3 +84,18 @@ def ping_service(id):
     return jsonify(
         err=""
     )
+
+@bp.route('/services/<id>/remove', methods=['DELETE'])
+def remove_service(id):
+    print("removing " + id)
+    db = get_db()
+    db.execute(
+        'delete from services where id = ?',
+        (id,)
+    )
+    db.commit()
+
+    print("removed " + id)
+    return jsonify(
+        err=""
+    )

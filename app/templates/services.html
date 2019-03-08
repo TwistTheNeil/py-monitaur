@@ -60,10 +60,10 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="removeServerModalLabel">Remove server</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+                <h5 class="modal-title" id="removeServerModalLabel">Remove server</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body" id="remove-server-modal">
                 <form id="remove-server-form" method="POST">
@@ -80,6 +80,34 @@
           </div>
         </div>
     </div>
+
+    <!-- Edit service modal -->
+    <div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editServiceModalLabel">Edit server</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="edit-service-modal">
+                <form id="edit-service-form" method="POST">
+                    <div class="form-group">
+                        <label for="edit-service-name">Enter name of service</label>
+                        <input class="form-control" id="edit-service-name" placeholder="Service name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-check"></i> Save</button>
+                <button type="submit" class="btn btn-danger" onclick="remove_service();"><i class="fas fa-trash"></i> Remove</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Service list -->
     <div class="table-responsive" id="services-section">
@@ -101,9 +129,9 @@
 <script>
 
     var TIMEOUT = 5;
+    var current_id = ""
 
     $(document).ready(function() {
-        // TODO: Clean up
         $("#registerNewServerModal").on("hidden.bs.modal", function(){
             $('#registering-server-name').val("");
             $("#register-new-server-alert-danger").remove();
@@ -114,10 +142,24 @@
             $("#remove-server-alert").remove();
         });
 
+        $("#editServiceModal").on("hidden.bs.modal", function(){
+            $('#edit-server-name').val("");
+            $("#edit-service-alert-danger").remove();
+        });
+
         $('[data-toggle="tooltip"]').tooltip()
 
         refresh_services();
     });
+
+    function show_alert(alertClass, alertID, alertText, alertParent) {
+        $("#"+alertID).remove();
+        $("<div>").addClass(alertClass)
+            .attr("role", 'alert')
+            .attr("id", alertID)
+            .text(alertText)
+            .appendTo(alertParent);
+    }
 
     function service_copy_url(id) {
         // TODO: pass this url from the backend
@@ -154,8 +196,13 @@
             .append($("<td>")
                 .append(
                     $("<div>")
-                    .append($("<button>").addClass("table-button btn btn-primary")
+                    .append($("<button>")
+                        .attr("id", "service-save-"+data.id) // Do we need this?
+                        .addClass("table-button btn btn-primary btn-sm")
                         .html('<i class="fas fa-cog"></i> Edit')
+                        .attr("data-toggle", "modal")
+                        .attr("data-target", "#editServiceModal")
+                        .attr("onclick", 'save_service_details(this.id);')
                     )
                 )
             )
@@ -215,7 +262,6 @@
             .done(function(response) {
                 json_data = JSON.parse(response)
                 $.each(json_data, function(i) {
-                    console.log(json_data[i])
                     add_service_to_table(json_data[i])
                 });
             })
@@ -224,6 +270,30 @@
                 console.log("get error")
                 console.log(response)
             });
+    }
+
+    function save_service_details(sid) {
+        current_id = sid
+    }
+
+    function remove_service() {
+        var delete_url = "/services/" + current_id.split("-").slice(2,7).join("-") + "/remove"
+
+        $.ajax({
+            url: delete_url,
+            type: 'DELETE',
+            success: function() {
+                refresh_services();
+                $('#editServiceModal').modal('hide');
+            },
+            error: function(response) {
+                show_alert( "alert alert-danger",
+                        "edit-service-alert-danger",
+                        "Unable to delete service. Please refresh page and try again.",
+                        "#edit-service-modal"
+                );
+            }
+        })
     }
 
 </script>
