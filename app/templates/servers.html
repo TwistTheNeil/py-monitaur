@@ -171,7 +171,7 @@
                     .text("Last seen: " + (response.last_logged == 0 ? "Never" :  last_seen + " minutes"))
                 )
                 .append($("<a>").addClass("btn btn-primary")
-                    .text("More Info")
+                    .html('<i class="fas fa-info-circle"></i> More Info')
                     .attr("href", 'services/on/'+response.id) // TOOD: Figure out how to use url_for across blurprints
                 )
                 .append($("<button>")
