@@ -38,7 +38,7 @@ def remove_server(name):
 def list_servers():
     db = get_db()
     server_list = db.execute(
-        'select S.name as name, S.id as id, MAX(L.logged_at) as last_logged from servers S, logged_times L where S.id = L.server_id group by S.id'
+        'select S.name as name, S.id as id, MAX(L.logged_at) as last_logged, S.pinned, S.enabled from servers S, logged_times L where S.id = L.server_id group by S.id order by S.pinned desc'
     ).fetchall()
 
     return json.dumps([dict(x) for x in server_list])
@@ -107,3 +107,17 @@ def new_server():
         return jsonify(
             err="Server name already exists."
         )
+
+@bp.route('/servers/<id>/modpin', methods=['PUT'])
+def modify_server_pin_status(id):
+    pin_status = request.form['pin_status']
+    db = get_db()
+    db.execute(
+       'update servers set pinned = ? where id = ?',
+       (pin_status, id,)
+    )
+    db.commit()
+
+    return jsonify(
+        err=""
+    )

@@ -156,11 +156,12 @@
         var last_seen = (((Date.now()/1000)-response.last_logged))/(60);
         var border_color = last_seen > 5 ? "border-danger" : "border-success"
         var status_icon = last_seen > 5 ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>'
+        var pin_html = response.pinned == 0 ? '<i class="fas fa-thumbtack"></i> Pin' : '<i class="fas fa-thumbtack"></i> Unpin'
+        var pin_button = response.pinned == 0 ? 'btn btn-light' : 'btn btn-info'
 
         $("<div>").addClass("card server-card " + border_color)
             .attr("id", "card-"+response.name) // TODO: name -> id
-            .append($("<div>").addClass("card-header text-left")
-                .attr("role", "button")
+            .append($("<div>").addClass("card-header")
                 .html(status_icon + " " + response.name)
             )
             .append($("<div>").addClass("card-body")
@@ -170,9 +171,19 @@
                 .append($("<p>").addClass("card-text")
                     .text("Last seen: " + (response.last_logged == 0 ? "Never" :  last_seen + " minutes"))
                 )
-                .append($("<a>").addClass("btn btn-primary")
-                    .html('<i class="fas fa-info-circle"></i> More Info')
-                    .attr("href", 'services/on/'+response.id) // TOOD: Figure out how to use url_for across blurprints
+                .append($("<div>")
+                    .addClass("btn-group")
+                    .attr("role", "group")
+                    .append($("<button>").addClass(pin_button)
+                        .html(pin_html)
+                        .attr("id", "pin-"+response.id)
+                        .attr("value", response.pinned)
+                        .attr("onclick", 'pin_server(this.id, this.value)') // TOOD: Figure out how to use url_for across blurprints
+                    )
+                    .append($("<button>").addClass("btn btn-primary")
+                        .html('<i class="fas fa-info-circle"></i> More Info')
+                        .attr("href", 'services/on/'+response.id) // TOOD: Figure out how to use url_for across blurprints
+                    )
                 )
                 .append($("<button>")
                     .attr("type", "button")
@@ -315,6 +326,23 @@
                 );*/
             }
         });
+    }
+
+    function pin_server(sid, status) {
+        var pin_status = status == 0 ? 1 : 0
+        var put_url = "/servers/" + sid.split("-").slice(1,6).join("-") + "/modpin"
+
+        $.ajax({
+            url: put_url,
+            type: 'PUT',
+            data: {"pin_status": pin_status},
+            success: function() {
+                refresh_servers();
+            },
+            error: function(response) {
+                console.log("Failed to un/pin")
+            }
+        })
     }
 
 </script>
