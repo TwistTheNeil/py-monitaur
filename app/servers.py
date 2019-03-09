@@ -17,12 +17,10 @@ bp = Blueprint('servers', __name__)
 def get_servers():
     return render_template('servers.html')
 
-# TODO: Make this a DELETE request
-@bp.route('/servers/<name>/delete', methods=['POST'])
+@bp.route('/servers/<name>/delete', methods=['DELETE'])
 def remove_server(name):
     db = get_db()
 
-    # TODO: delete respective services too
     db.execute(
         'delete from servers where name = ?',
         (name,)
