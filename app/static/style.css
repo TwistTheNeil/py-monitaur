@@ -26,3 +26,10 @@ body {
 .border-success .card-header {
     color: green;
 }
+
+.footer {
+    height: 50px;
+    width: 100%;
+    background-color: #343a40;
+    margin-top: 20px;
+}
