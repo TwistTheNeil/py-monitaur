@@ -108,7 +108,6 @@
         </div>
     </div>
 
-
     <!-- Service list -->
     <div class="table-responsive" id="services-section">
         <table class="table table-sm table-striped table-hover">
@@ -117,7 +116,8 @@
                 <th scope="col">Name</th>
                 <th scope="col">ID</th>
                 <th scope="col">Last seen</th>
-                <th scope="col"></th>
+                <th scope="col"></th> <!-- Edit button -->
+                <th scope="col"></th> <!-- (Un)Pin button -->
             </thead>
             <tbody id="services-section-body">
 
@@ -174,6 +174,8 @@
         modifier['last'] = data.last_seen == 0 ? "Never" : Math.floor(((Date.now()/1000) - data.last_seen)/60) + " minutes ago"
         modifier['last_n'] = ((Date.now()/1000) - data.last_seen)/60
         modifier['status_icon'] =  modifier['last_n'] > TIMEOUT ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>'
+        modifier['pin_html'] = data.pinned == 0 ? '<i class="fas fa-thumbtack"></i> Pin' : '<i class="fas fa-thumbtack"></i> Unpin'
+        modifier['pin_button'] = data.pinned == 0 ? 'table-button btn btn-light btn-sm' : 'table-button btn btn-info btn-sm'
 
         $("<tr>")
             .attr("style", (modifier['last_n'] > TIMEOUT ? "color:red;" : "color:green;"))
@@ -193,6 +195,7 @@
                 .append("   " + data.id)
             )
             .append($("<td>").text(modifier['last']))
+            // Edit Button
             .append($("<td>")
                 .append(
                     $("<div>")
@@ -203,6 +206,19 @@
                         .attr("data-toggle", "modal")
                         .attr("data-target", "#editServiceModal")
                         .attr("onclick", 'save_service_details(this.id);')
+                    )
+                )
+            )
+            // (Un)Pin button
+            .append($("<td>")
+                .append(
+                    $("<div>")
+                    .append($("<button>")
+                        .attr("id", "pin-"+data.id)
+                        .attr("value", data.pinned)
+                        .addClass(modifier['pin_button'])
+                        .html(modifier['pin_html'])
+                        .attr("onclick", 'pin_service(this.id, this.value);')
                     )
                 )
             )
@@ -327,6 +343,25 @@
             }
         })
     }
+
+    function pin_service(sid, status) {
+        var pin_status = status == 0 ? 1 : 0
+
+        var put_url = "/services/" + sid.split("-").slice(1,6).join("-") + "/modpin"
+
+        $.ajax({
+            url: put_url,
+            type: 'PUT',
+            data: {"pin_status": pin_status},
+            success: function() {
+                refresh_services();
+            },
+            error: function(response) {
+                console.log("Failed to un/pin")
+            }
+        })
+    }
+    
 </script>
 
 {% endblock %}

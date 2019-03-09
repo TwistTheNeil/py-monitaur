@@ -25,7 +25,7 @@ def show_services_page(id):
 @login_required
 def get_services(id):
     data = get_db().execute(
-        'select S.name as name, S.id as id, MAX(L.logged_at) as last_seen from services S, logged_times L, servers R where S.id = L.service_id and R.id = ? group by S.name',
+        'select S.name as name, S.id as id, MAX(L.logged_at) as last_seen, S.pinned, S.enabled from services S, logged_times L, servers R where S.id = L.service_id and R.id = ? group by S.name order by S.pinned desc',
         (id,)
     ).fetchall()
 
@@ -105,6 +105,20 @@ def rename_service(id):
     db.execute(
        'update services set name = ? where id = ?',
        (updated_name, id,)
+    )
+    db.commit()
+
+    return jsonify(
+        err=""
+    )
+
+@bp.route('/services/<id>/modpin', methods=['PUT'])
+def modify_service_pin_status(id):
+    pin_status = request.form['pin_status']
+    db = get_db()
+    db.execute(
+       'update services set pinned = ? where id = ?',
+       (pin_status, id,)
     )
     db.commit()
 
