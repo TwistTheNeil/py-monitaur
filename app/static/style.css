@@ -1,5 +1,6 @@
 body {
     background-color: #ffffff;
+    min-height: 100vh;
 }
 
 .toolbar-row {
@@ -27,9 +28,6 @@ body {
     color: green;
 }
 
-.footer {
-    height: 50px;
-    width: 100%;
-    background-color: #343a40;
-    margin-top: 20px;
+footer {
+    height: 60px;
 }
