@@ -180,7 +180,7 @@
                         .attr("value", response.pinned)
                         .attr("onclick", 'pin_server(this.id, this.value)') // TOOD: Figure out how to use url_for across blurprints
                     )
-                    .append($("<button>").addClass("btn btn-primary")
+                    .append($("<a>").addClass("btn btn-primary")
                         .html('<i class="fas fa-info-circle"></i> More Info')
                         .attr("href", 'services/on/'+response.id) // TOOD: Figure out how to use url_for across blurprints
                     )
