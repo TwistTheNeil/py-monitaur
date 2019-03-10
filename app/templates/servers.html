@@ -102,15 +102,12 @@
             $("#remove-server-alert").remove();
         });
 
+        $('.dropdown-toggle').dropdown();
+
         refresh_servers();
     });
 
-    function info_click() {
-        console.log("safdasfd!!");
-    }
-
     function save_server_name(server_id) {
-        console.log(server_id);
         current_server_chosen = server_id.split(/-(.+)/)[1];
     }
 
@@ -152,6 +149,21 @@
             .appendTo(alertParent);
     }
 
+    function server_copy_url(id) {
+        // TODO: pass this url from the backend
+        var url_selected = "https://monitaur.neilcastelino.com/server/" + id.split("-").slice(2,7).join("-") + "/ping"
+        var temp = $('<input>').val(url_selected).appendTo('body').select()
+        document.execCommand("copy");
+        temp.remove();
+    }
+
+    function server_copy_id(id) {
+        var url_selected = id.split("-").slice(2,7).join("-")
+        var temp = $('<input>').val(url_selected).appendTo('body').select()
+        document.execCommand("copy");
+        temp.remove();
+    }
+
     function add_server_to_view(response) {
         var last_seen = (((Date.now()/1000)-response.last_logged))/(60);
         var border_color = last_seen > 5 ? "border-danger" : "border-success"
@@ -184,7 +196,32 @@
                         .html('<i class="fas fa-info-circle"></i> More Info')
                         .attr("href", 'services/on/'+response.id) // TOOD: Figure out how to use url_for across blurprints
                     )
+                    .append($("<button>")
+                        .addClass("btn btn-primary dropdown-toggle")
+                        .attr("id", "server-copy-"+response.id)
+                        .attr("type", "button")
+                        .attr("data-toggle", "dropdown")
+                        .attr("aria-haspopup", "true")
+                        .attr("aria-expanded", "false")
+                        .html('<i class="fas fa-copy"></i> Copy')
+                    )
+                    .append($("<div>")
+                        .addClass("dropdown-menu")
+                        .append($("<button>")
+                            .attr("id", "server-copyurl-"+response.id)
+                            .addClass("dropdown-item")
+                            .attr("onclick", "server_copy_url(this.id)")
+                            .text("URL")
+                        )
+                        .append($("<button>")
+                            .attr("id", "server-copyid-"+response.id)
+                            .addClass("dropdown-item")
+                            .attr("onclick", "server_copy_id(this.id)")
+                            .text("ID")
+                        )
+                    )
                 )
+
                 .append($("<button>")
                     .attr("type", "button")
                     .attr("id", "removeServer-"+response.name)
