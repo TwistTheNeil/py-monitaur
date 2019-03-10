@@ -3,6 +3,13 @@ body {
     min-height: 100vh;
 }
 
+.jumbotron img {
+    width: 50%;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
 .toolbar-row {
     margin-top: 10px;
 }
