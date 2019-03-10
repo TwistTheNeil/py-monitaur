@@ -8,6 +8,6 @@ uuid="d5164787-272c-3cf5-a502-981aa7aba297"
 curl="/usr/bin/curl"
 app_name="syncthing"
 
-if [ $(pgrep ${app_name}) ]; then
+if [ "$(pidof ${app_name})" ]; then
 	${curl} -X POST "${hostname}/services/${uuid}/ping" &> /dev/null
 fi
