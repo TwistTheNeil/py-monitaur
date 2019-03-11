@@ -10,6 +10,7 @@ Look at the examples directory for an idea on how to use it.
 $ git clone ...
 $ python3 -m venv venv
 $ . venv/bin/activate
+$ pip install flask
 $ FLASK_APP=app FLASK_ENV=production flask run
 ```
 
