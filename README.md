@@ -7,7 +7,8 @@ Look at the examples directory for an idea on how to use it.
 ## Running on linux
 
 ```
-$ git clone ...
+$ git clone https://github.com/TwistTheNeil/py-monitaur.git
+$ cd py-monitaur
 $ python3 -m venv venv
 $ . venv/bin/activate
 $ pip install flask
