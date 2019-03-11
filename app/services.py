@@ -86,6 +86,7 @@ def ping_service(id):
     )
 
 @bp.route('/services/<id>/remove', methods=['DELETE'])
+@login_required
 def remove_service(id):
     db = get_db()
     db.execute(
@@ -99,6 +100,7 @@ def remove_service(id):
     )
 
 @bp.route('/services/<id>/rename', methods=['PUT'])
+@login_required
 def rename_service(id):
     updated_name = request.form['updated_name']
     db = get_db()
@@ -113,6 +115,7 @@ def rename_service(id):
     )
 
 @bp.route('/services/<id>/modpin', methods=['PUT'])
+@login_required
 def modify_service_pin_status(id):
     pin_status = request.form['pin_status']
     db = get_db()

@@ -18,6 +18,7 @@ def get_servers():
     return render_template('servers.html')
 
 @bp.route('/servers/<name>/delete', methods=['DELETE'])
+@login_required
 def remove_server(name):
     db = get_db()
 
@@ -33,6 +34,7 @@ def remove_server(name):
     )
 
 @bp.route('/servers/list', methods=['GET'])
+@login_required
 def list_servers():
     db = get_db()
     server_list = db.execute(
@@ -61,6 +63,7 @@ def ping_server(id):
     )
 
 @bp.route('/servers/<id>/metrics', methods=['GET'])
+@login_required
 def get_server_metrics(id):
     returned = get_db().execute(
         'select logged_at, load from logged_times where server_id = ? and load is not null',
@@ -70,6 +73,7 @@ def get_server_metrics(id):
     return json.dumps([dict(x) for x in returned])
 
 @bp.route('/servers/new', methods=['POST'])
+@login_required
 def new_server():
     new_server_name = request.form['registering-server-name']
 
@@ -107,6 +111,7 @@ def new_server():
         )
 
 @bp.route('/servers/<id>/modpin', methods=['PUT'])
+@login_required
 def modify_server_pin_status(id):
     pin_status = request.form['pin_status']
     db = get_db()
