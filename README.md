@@ -33,3 +33,8 @@ server {
     }
 }
 ```
+
+## Screenshots
+
+![alt text](docs/servers.view.png "Servers View")
+![alt text](docs/services.view.png "Services View")
