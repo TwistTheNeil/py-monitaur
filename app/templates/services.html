@@ -39,7 +39,7 @@
               </button>
             </div>
             <div class="modal-body" id="register-new-server-modal">
-                <form id="register-new-server-form" method="POST">
+                <form id="register-new-server-form" action="javascript:register_new_service()" method="POST">
                     <div class="form-group">
                         <label for="registering-server-name">Name</label>
                         <input class="form-control" id="registering-server-name" placeholder="Enter name">
@@ -49,33 +49,6 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary" onclick="register_new_service();">Save</button>
-            </div>
-          </div>
-        </div>
-    </div>
-
-    <!-- Remove service modal -->
-    <!-- TODO: Refactor this -->
-    <div class="modal fade" id="removeServerModal" tabindex="-1" role="dialog" aria-labelledby="removeServerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="removeServerModalLabel">Remove server</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="remove-server-modal">
-                <form id="remove-server-form" method="POST">
-                    <div class="form-group">
-                        <label for="remove-server-name">Are you sure that you would like to remove this server? If you are, please type in the name of the server to verify.</label>
-                        <input class="form-control" id="remove-server-name" placeholder="Server name">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-danger" onclick="remove_server();">Remove</button>
             </div>
           </div>
         </div>
@@ -92,7 +65,7 @@
                 </button>
             </div>
             <div class="modal-body" id="edit-service-modal">
-                <form id="edit-service-form" method="POST">
+                <form id="edit-service-form" action="javascript:rename_service()" method="POST">
                     <div class="form-group">
                         <label for="edit-service-name">Enter name of service</label>
                         <input class="form-control" id="edit-service-name" placeholder="Service name">
