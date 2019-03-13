@@ -124,3 +124,18 @@ def modify_server_pin_status(id):
     return jsonify(
         err=""
     )
+
+@bp.route('/servers/<id>/rename', methods=['PUT'])
+@login_required
+def rename_server(id):
+    updated_name = request.form['updated_name']
+    db = get_db()
+    db.execute(
+       'update servers set name = ? where id = ?',
+       (updated_name, id,)
+    )
+    db.commit()
+
+    return jsonify(
+        err=""
+    )

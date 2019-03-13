@@ -81,6 +81,32 @@
         </div>
     </div>
 
+    <!-- Rename server modal -->
+    <div class="modal fade" id="renameServerModal" tabindex="-1" role="dialog" aria-labelledby="renameServerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="renameServerModalLabel">Rename server</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="rename-server-modal">
+                <form id="rename-server-form" method="POST">
+                    <div class="form-group">
+                        <label for="rename-server-name">Updated server name:</label>
+                        <input class="form-control" id="rename-server-name" placeholder="Updated name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-warning" onclick="rename_server();">Rename</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Server list -->
     <div id="servers-section"></div>
 </div>
@@ -100,6 +126,11 @@
         $("#removeServerModal").on("hidden.bs.modal", function(){
             $('#remove-server-name').val("");
             $("#remove-server-alert").remove();
+        });
+
+        $("#renameServerModal").on("hidden.bs.modal", function(){
+            $('#rename-server-name').val("");
+            $("#rename-server-alert").remove();
         });
 
         $('.dropdown-toggle').dropdown();
@@ -203,7 +234,7 @@
                         .attr("data-toggle", "dropdown")
                         .attr("aria-haspopup", "true")
                         .attr("aria-expanded", "false")
-                        .html('<i class="fas fa-copy"></i> Copy')
+                        .html('<i class="fas fa-ellipsis-v"></i> Actions')
                     )
                     .append($("<div>")
                         .addClass("dropdown-menu")
@@ -211,17 +242,32 @@
                             .attr("id", "server-copyurl-"+response.id)
                             .addClass("dropdown-item")
                             .attr("onclick", "server_copy_url(this.id)")
-                            .text("URL")
+                            .text("Copy URL")
                         )
                         .append($("<button>")
                             .attr("id", "server-copyid-"+response.id)
                             .addClass("dropdown-item")
                             .attr("onclick", "server_copy_id(this.id)")
-                            .text("ID")
+                            .text("Copy ID")
+                        )
+                        .append($("<div>")
+                            .addClass("dropdown-divider")
+                        )
+                        .append($("<button>")
+                            .attr("type", "button")
+                            .attr("id", "renameServer-"+response.id)
+                            .addClass("dropdown-item")
+                            .attr("data-toggle", "modal")
+                            .attr("data-target", "#renameServerModal")
+                            .attr("onclick", 'save_server_name(this.id);')
+                            .append($("<i>")
+                                .addClass("fas fa-trash fa-sm")
+                                .attr("aria-hidden", "true")
+                            )
+                            .text('Rename')
                         )
                     )
                 )
-
                 .append($("<button>")
                     .attr("type", "button")
                     .attr("id", "removeServer-"+response.name)
@@ -363,6 +409,38 @@
                 );*/
             }
         });
+    }
+
+    function rename_server() {
+        var updated_name = $("#rename-server-name").val().trim()
+
+        if(updated_name === "") {
+            show_alert( "alert alert-danger",
+                        "edit-server-alert-danger",
+                        "Cannot set an empty string or whitespace as a name. Try again.",
+                        "#edit-server-modal"
+            );
+            return;
+        }
+
+        var put_url = "/servers/" + current_server_chosen.split("-").slice(0,5).join("-") + "/rename"
+
+        $.ajax({
+            url: put_url,
+            type: 'PUT',
+            data: {"updated_name": updated_name},
+            success: function() {
+                refresh_servers();
+                $('#renameServerModal').modal('hide');
+            },
+            error: function(response) {
+                show_alert( "alert alert-danger",
+                        "edit-server-alert-danger",
+                        "Unable to update server name. Please refresh page and try again.",
+                        "#edit-server-modal"
+                );
+            }
+        })
     }
 
     function pin_server(sid, status) {
