@@ -34,6 +34,12 @@ server {
         proxy_pass http://localhost:5000;
         proxy_buffering off;
     }
+
+    # This issue will be fixed in a later update
+    location /register {
+	allow 127.0.0.1;
+        deny all;
+    }
 }
 ```
 
