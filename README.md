@@ -11,7 +11,7 @@ $ git clone https://github.com/TwistTheNeil/py-monitaur.git
 $ cd py-monitaur
 $ python3 -m venv venv
 $ . venv/bin/activate
-$ pip install flask
+$ pip install -r requirements.txt
 $ flask init-db
 $ FLASK_APP=app FLASK_ENV=production flask run
 ```
