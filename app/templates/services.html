@@ -135,8 +135,12 @@
     }
 
     function service_copy_url(id) {
-        // TODO: pass this url from the backend
-        var url_selected = "https://monitaur.neilcastelino.com/services/" + id.split("-").slice(2,7).join("-") + "/ping"
+        var this_url = window.location.href.split("/")
+        this_url.pop()
+        this_url.pop()
+        this_url.pop()
+        this_url = this_url.join("/")
+        var url_selected = this_url + "/services/" + id.split("-").slice(2,7).join("-") + "/ping"
         var temp = $('<input>').val(url_selected).appendTo('body').select()
         document.execCommand("copy");
         temp.remove();
