@@ -15,7 +15,7 @@
         </div>
         <div class="col-md-6">
             <div class="btn-group float-right mt-2" role="group">
-                <button type="button" class="btn btn-secondary btn-md" data-toggle="modal" data-target="#registerNewServerModal">
+                <button type="button" class="btn btn-secondary btn-md" data-toggle="modal" data-target="#registerNewServiceModal">
                     <i class="fa fa-plus fa-sm" aria-hidden="true"></i>
                     Register
                 </button>
@@ -29,20 +29,20 @@
 
     <!-- Register new service modal -->
     <!-- TODO: Refactor this -->
-    <div class="modal fade" id="registerNewServerModal" tabindex="-1" role="dialog" aria-labelledby="registerNewServerModalLabel" aria-hidden="true">
+    <div class="modal fade" id="registerNewServiceModal" tabindex="-1" role="dialog" aria-labelledby="registerNewServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="registerNewServerModalLabel">Register new service</h5>
+              <h5 class="modal-title" id="registerNewServiceModalLabel">Register new service</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body" id="register-new-server-modal">
-                <form id="register-new-server-form" action="javascript:register_new_service()" method="POST">
+            <div class="modal-body" id="register-new-service-modal">
+                <form id="register-new-service-form" action="javascript:register_new_service()" method="POST">
                     <div class="form-group">
-                        <label for="registering-server-name">Name</label>
-                        <input class="form-control" id="registering-server-name" placeholder="Enter name">
+                        <label for="registering-service-name">Name</label>
+                        <input class="form-control" id="registering-service-name" placeholder="Enter name">
                     </div>
                 </form>
             </div>
@@ -59,7 +59,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editServiceModalLabel">Edit server</h5>
+                <h5 class="modal-title" id="editServiceModalLabel">Edit service</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -105,14 +105,14 @@
     var current_id = ""
 
     $(document).ready(function() {
-        $("#registerNewServerModal").on("hidden.bs.modal", function(){
-            $('#registering-server-name').val("");
-            $("#register-new-server-alert-danger").remove();
+        $("#registerNewServiceModal").on("hidden.bs.modal", function(){
+            $('#registering-service-name').val("");
+            $("#register-new-service-alert-danger").remove();
         });
 
-        $("#removeServerModal").on("hidden.bs.modal", function(){
-            $('#remove-server-name').val("");
-            $("#remove-server-alert").remove();
+        $("#removeServiceModal").on("hidden.bs.modal", function(){
+            $('#remove-service-name').val("");
+            $("#remove-service-alert").remove();
         });
 
         $("#editServiceModal").on("hidden.bs.modal", function(){
@@ -201,18 +201,18 @@
     function register_new_service() {
         // Make sure that the input is not empty
         // TODO: refactor AND fix naming (server -> service) after refactoring
-        if($.trim($("#registering-server-name").val()) == '') {
+        if($.trim($("#registering-service-name").val()) == '') {
             show_alert( "alert alert-danger",
-                        "register-new-server-alert-danger",
+                        "register-new-service-alert-danger",
                         "The name field can't be empty.",
-                        "#register-new-server-modal"
+                        "#register-new-service-modal"
             );
 
             return;
         }
 
         var data = {};
-        data['registering-service-name'] = $("#registering-server-name").val(); // TODO: fix name
+        data['registering-service-name'] = $("#registering-service-name").val(); // TODO: fix name
 
         var post_url = "{{url_for('services.new_service', id='server_id')}}"
         post_url = post_url.replace(/server_id/, '{{server_id}}');
@@ -220,23 +220,23 @@
         $.post(post_url, data)
             .done(function(response) {
                 if(response.err != "") {
-                    $("#register-new-server-alert-danger").remove();
+                    $("#register-new-service-alert-danger").remove();
                     $("<div>").addClass("alert alert-danger")
                         .attr("role", "alert")
-                        .attr("id", "register-new-server-alert-danger")
+                        .attr("id", "register-new-service-alert-danger")
                         .text(response.err)
-                        .appendTo("#register-new-server-modal");
+                        .appendTo("#register-new-service-modal");
                 } else {
                     refresh_services(response);
-                    $('#registerNewServerModal').modal('hide');
+                    $('#registerNewServiceModal').modal('hide');
                 }
             })
             .fail(function(error) {
                 console.log(error);
                 show_alert( "alert alert-danger",
-                    "register-new-server-alert-danger",
+                    "register-new-service-alert-danger",
                     "Server returned error.", //TODO
-                    "#register-new-server-modal"
+                    "#register-new-service-modal"
                 );
             })
     }

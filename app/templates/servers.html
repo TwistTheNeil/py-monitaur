@@ -203,7 +203,7 @@
         var pin_button = response.pinned == 0 ? 'btn btn-light' : 'btn btn-info'
 
         $("<div>").addClass("card server-card " + border_color)
-            .attr("id", "card-"+response.name) // TODO: name -> id
+            .attr("id", "card-"+response.name)
             .append($("<div>").addClass("card-header")
                 .html(status_icon + " " + response.name)
             )
@@ -284,6 +284,7 @@
             )
             .appendTo("#servers-section");
 
+        // ChartJS library used here
         var metrics_load = [];
         var metrics_log = [];
 
