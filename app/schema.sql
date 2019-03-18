@@ -1,6 +1,8 @@
 drop table if exists servers;
 drop table if exists users;
 
+-- Need to set PRAGMA foreign_keys=1
+
 create table servers (
     name text not null,
     enabled integer default 1 not null,

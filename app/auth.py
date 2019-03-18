@@ -9,6 +9,7 @@ from app.db import get_db
 
 bp = Blueprint('auth', __name__)
 
+# Used from Flask documentation
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
