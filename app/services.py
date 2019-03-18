@@ -25,7 +25,7 @@ def show_services_page(id):
 @login_required
 def get_services(id):
     data = get_db().execute(
-        'select S.name as name, S.id as id, MAX(L.logged_at) as last_seen, S.pinned, S.enabled from services S, logged_times L, servers R where S.id = L.service_id and R.id = ? group by S.name order by S.pinned desc',
+        'select S.name as name, S.id as id, MAX(L.logged_at) as last_seen, S.pinned, S.enabled from services S, logged_times L, servers R where S.id = L.service_id and S.server_id = ? group by S.name order by S.pinned desc',
         (id,)
     ).fetchall()
 
